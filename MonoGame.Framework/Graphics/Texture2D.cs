@@ -209,7 +209,7 @@ namespace Microsoft.Xna.Framework.Graphics
                 else
                 {
                     GL.TexImage2D(TextureTarget.Texture2D, 0,
-#if IPHONE || ANDROID
+#if IOS || ANDROID
                         (int)glInternalFormat,
 #else				           
 					    glInternalFormat,
@@ -412,7 +412,7 @@ namespace Microsoft.Xna.Framework.Graphics
 		
 		public void GetData<T>(int level, Rectangle? rect, T[] data, int startIndex, int elementCount) where T : struct
         {
-#if IPHONE 
+#if IOS 
 			throw new NotImplementedException();
 #elif ANDROID
 			if (data == null)
@@ -609,17 +609,17 @@ namespace Microsoft.Xna.Framework.Graphics
 		public static Texture2D FromStream(GraphicsDevice graphicsDevice, Stream stream)
 		{
             //todo: partial classes would be cleaner
-#if IPHONE || MONOMAC
+#if IOS || MONOMAC
             
 
 
-#if IPHONE
+#if IOS
 			using (var uiImage = UIImage.LoadFromData(NSData.FromStream(stream)))
 #elif MONOMAC
 			using (var nsImage = NSImage.FromStream (stream))
 #endif
 			{
-#if IPHONE
+#if IOS
 				var cgImage = uiImage.CGImage;
 #elif MONOMAC
 				var cgImage = nsImage.AsCGImage (RectangleF.Empty, null, null);
@@ -804,7 +804,7 @@ namespace Microsoft.Xna.Framework.Graphics
         {
             if (this.glTexture < 0)
             {
-#if IPHONE || ANDROID
+#if IOS || ANDROID
                 GL.GenTextures(1, ref this.glTexture);
 #else
                 GL.GenTextures(1, out this.glTexture);

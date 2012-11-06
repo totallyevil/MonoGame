@@ -41,7 +41,7 @@
 #region Using Statements
 using System;
 
-#if IPHONE
+#if IOS
 using OpenTK.Audio.OpenAL;
 #elif MONOMAC
 using MonoMac.OpenAL;
