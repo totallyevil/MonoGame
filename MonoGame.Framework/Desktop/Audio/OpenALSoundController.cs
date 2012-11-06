@@ -4,7 +4,7 @@ using System.Linq;
 using System.IO;
 using System.Runtime.InteropServices;
 
-#if IOS || WINDOWS || LINUX
+#if IPHONE || WINDOWS || LINUX
 using OpenTK.Audio.OpenAL;
 using OpenTK;
 #elif MONOMAC
@@ -30,7 +30,7 @@ namespace Microsoft.Xna.Framework.Audio
 
 		private OpenALSoundController ()
 		{
-#if MACOSX || IOS
+#if MACOSX || IPHONE
 			alcMacOSXMixerOutputRate(PREFERRED_MIX_RATE);
 #endif
 			_device = Alc.OpenDevice (string.Empty);
@@ -195,7 +195,7 @@ namespace Microsoft.Xna.Framework.Audio
 			}
 		}
 
-#if MACOSX || IOS
+#if MACOSX || IPHONE
 		public const string OpenALLibrary = "/System/Library/Frameworks/OpenAL.framework/OpenAL";
 
 		[DllImport(OpenALLibrary, EntryPoint = "alcMacOSXMixerOutputRate")]

@@ -40,13 +40,13 @@ purpose and non-infringement.
 
 using System;
 
-#if IOS
+#if IPHONE
 using MonoTouch.AudioToolbox;
 #endif
 
 using Microsoft.Xna.Framework.Audio;
 
-#if IOS
+#if IPHONE
 using MonoTouch.AudioToolbox;
 using MonoTouch.AVFoundation;
 using MonoTouch.Foundation;
@@ -172,7 +172,7 @@ namespace Microsoft.Xna.Framework.Media
         public static event EventHandler<EventArgs> MediaStateChanged;
         
 		
-#if IOS
+#if IPHONE
 		public static bool GameHasControl 
 		{ 
 			get 

@@ -47,7 +47,7 @@ using Microsoft.Xna;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 
-#if IOS
+#if IPHONE
 using MonoTouch.AudioToolbox;
 using MonoTouch.AudioUnit;
 

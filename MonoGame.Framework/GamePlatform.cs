@@ -84,7 +84,7 @@ namespace Microsoft.Xna.Framework
         #region Construction/Destruction
         public static GamePlatform Create(Game game)
         {
-#if IOS
+#if IPHONE
             return new iOSGamePlatform(game);
 #elif MONOMAC
             return new MacGamePlatform(game);

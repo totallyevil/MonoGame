@@ -43,7 +43,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using Microsoft.Xna.Framework.Graphics;
-#if IOS
+#if IPHONE
 using MonoTouch.Foundation;
 using MonoTouch.OpenGLES;
 #if ES11
@@ -108,7 +108,7 @@ namespace Microsoft.Xna.Framework
                 return;
             }
 
-#if IOS
+#if IPHONE
             lock (BackgroundContext)
             {
                 // Make the context current on this thread if it is not already

@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 
 
-#if IOS || ANDROID
+#if IPHONE || ANDROID
 using OpenTK.Graphics.ES20;
 using ActiveUniformType = OpenTK.Graphics.ES20.All;
 #elif MONOMAC

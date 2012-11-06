@@ -138,7 +138,7 @@ namespace Microsoft.Xna.Framework.Graphics
             set
             {
 				isFullScreen = value;				
-#if IOS
+#if IPHONE
 				UIApplication.SharedApplication.StatusBarHidden = isFullScreen;
 #endif
 
@@ -169,7 +169,7 @@ namespace Microsoft.Xna.Framework.Graphics
         public void Clear()
         {
             backBufferFormat = SurfaceFormat.Color;
-#if IOS
+#if IPHONE
 			// Mainscreen.Bounds does not account for the device's orientation. it ALWAYS assumes portrait
 			var width = (int)(UIScreen.MainScreen.Bounds.Width * UIScreen.MainScreen.Scale);
 			var height = (int)(UIScreen.MainScreen.Bounds.Height * UIScreen.MainScreen.Scale);
@@ -189,7 +189,7 @@ namespace Microsoft.Xna.Framework.Graphics
             backBufferHeight = GraphicsDeviceManager.DefaultBackBufferHeight;     
 #endif
             deviceWindowHandle = IntPtr.Zero;
-#if IOS
+#if IPHONE
 			isFullScreen = UIApplication.SharedApplication.StatusBarHidden;
 #else
             // isFullScreen = false;
