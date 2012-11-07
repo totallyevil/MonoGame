@@ -1,7 +1,7 @@
 // #region License
 // /*
 // Microsoft Public License (Ms-PL)
-// MonoGame - Copyright © 2009 The MonoGame Team
+// MonoGame - Copyright Â© 2009 The MonoGame Team
 // 
 // All rights reserved.
 // 
@@ -41,38 +41,45 @@
 
 using System;
 using System.IO;
-
-using Microsoft.Xna.Framework.Media;
+using System.Linq;
 
 namespace Microsoft.Xna.Framework.Content
 {
-    internal class VideoReader : ContentTypeReader<Video>
-    {
-#if ANDROID
-        static string[] supportedExtensions = new string[] { ".3gp", ".mkv", ".mp4", ".ts", ".webm" };
-#elif IPHONE || MONOMAC
-        static string[] supportedExtensions = new string[] { ".mp4", ".mov", ".avi", ".m4v", ".3gp" };
-#else
-        static string[] supportedExtensions = new string[] { ".mp4", ".mov", ".avi", ".m4v" };
-#endif
-
-        internal static string Normalize(string fileName)
+	internal class SongReader
+	{
+		public static string Normalize(string FileName)
         {
-            return Normalize(fileName, supportedExtensions);
+            int index = FileName.LastIndexOf(Path.DirectorySeparatorChar);
+            string path = string.Empty;
+            string file = FileName;
+            if (index >= 0)
+            {
+                file = FileName.Substring(index + 1, FileName.Length - index - 1);
+                path = FileName.Substring(0, index);
+            }
+            string[] files = Game.Activity.Assets.List(path);
+
+            if (Contains(file, files))
+                return FileName;
+			
+			// Check the file extension
+			if (!string.IsNullOrEmpty(Path.GetExtension(FileName)))
+			{
+				return null;
+			}
+			
+		    return Path.Combine(path, TryFindAnyCased(file, files, ".ogg", ".mp3", ".mid"));;
+		}
+
+        private static string TryFindAnyCased(string search, string[] arr, params string[] extensions)
+        {
+            return arr.FirstOrDefault(s => extensions.Any(ext => s.ToLower() == (search.ToLower() + ext)));
         }
 
-        protected internal override Video Read(ContentReader input, Video existingInstance)
+        private static bool Contains(string search, string[] arr)
         {
-            string path = input.ReadObject<string>();
-            path = Path.Combine(input.ContentManager.RootDirectory, path);
-            path = TitleContainer.GetFilename(path);
-
-            /*int durationMS =*/ input.ReadObject<int>();
-            /*int width =*/ input.ReadObject<int>();
-            /*int height =*/ input.ReadObject<int>();
-            /*float framesPerSecond =*/ input.ReadObject<Single>();
-            /*int soundTrackType =*/ input.ReadObject<int>();   // 0 = Music, 1 = Dialog, 2 = Music and dialog
-            return new Video(path);
+            return arr.Any(s => s == search);
         }
-    }
+
+	}
 }

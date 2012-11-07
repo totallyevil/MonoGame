@@ -1,4 +1,4 @@
- #region License
+// #region License
 // /*
 // Microsoft Public License (Ms-PL)
 // MonoGame - Copyright © 2009 The MonoGame Team
@@ -36,55 +36,31 @@
 // permitted under your local laws, the contributors exclude the implied warranties of merchantability, fitness for a particular
 // purpose and non-infringement.
 // */
-#endregion License 
+// #endregion License
+// 
 
 using System;
 using System.IO;
 using System.Linq;
 
-
-using Microsoft.Xna.Framework.Graphics;
-
-namespace Microsoft.Xna.Framework.Media
+namespace Microsoft.Xna.Framework.Content
 {
-	/// <summary>
-	/// PlayStationSuite has no video support
-	/// </summary>
-    public sealed class Video : IDisposable
-    {
-		private string _fileName;
-		private Color _backColor = Color.Black;
-       
-		
-		internal Video(string FileName)
+	internal class SoundEffectReader
+	{
+		public static string Normalize(string FileName)
 		{
-			_fileName = FileName;
-		}
-		
-		public Color BackgroundColor
-		{
-			set
-			{
-				_backColor = value;
-			}
-			get
-			{
-				return _backColor;
-			}
-		}
-		
-		public string FileName
-		{
-			get 
-			{
-				return _fileName;
-			}
-		}
-		
-		internal static string Normalize(string FileName)
-		{
-			if (File.Exists(FileName))
-				return FileName;
+            int index = FileName.LastIndexOf(Path.DirectorySeparatorChar);
+            string path = string.Empty;
+            string file = FileName;
+            if (index >= 0)
+            {
+                file = FileName.Substring(index + 1, FileName.Length - index - 1);
+                path = FileName.Substring(0, index);
+            }
+            string[] files = Game.Activity.Assets.List(path);
+
+            if (Contains(file, files))
+                return FileName;
 			
 			// Check the file extension
 			if (!string.IsNullOrEmpty(Path.GetExtension(FileName)))
@@ -92,22 +68,18 @@ namespace Microsoft.Xna.Framework.Media
 				return null;
 			}
 			
-			// Concat the file name with valid extensions
-			if (File.Exists(FileName+".mp4"))
-				return FileName+".mp4";
-			if (File.Exists(FileName+".mov"))
-				return FileName+".mov";
-			if (File.Exists(FileName+".avi"))
-				return FileName+".avi";
-			if (File.Exists(FileName+".m4v"))
-				return FileName+".m4v";
-			
-			
-			return null;
+            return Path.Combine(path, TryFindAnyCased(file, files, ".wav", ".ogg", ".mp3", ".mid"));
 		}
-		
-		public void Dispose()
-		{
-		}
-    }
+
+        private static string TryFindAnyCased(string search, string[] arr, params string[] extensions)
+        {
+            return arr.FirstOrDefault(s => extensions.Any(ext => s.ToLower() == (search.ToLower() + ext)));
+        }
+
+        private static bool Contains(string search, string[] arr)
+        {
+            return arr.Any(s => s == search);
+        }
+
+	}
 }
