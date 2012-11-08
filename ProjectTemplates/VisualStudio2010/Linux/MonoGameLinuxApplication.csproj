@@ -52,6 +52,10 @@
     <Reference Include="Tao.Sdl">
        <HintPath>$(MSBuildExtensionsPath)\..\MonoGame\v3.0\Assemblies\Tao.Sdl.dll</HintPath>
     </Reference>
+    <Reference Include="OpenTK" />
+    <Reference Include="MonoGame.Framework.Linux" />
+    <Reference Include="Lidgren.Network" />
+    <Reference Include="Tao.Sdl"/>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
   </ItemGroup>

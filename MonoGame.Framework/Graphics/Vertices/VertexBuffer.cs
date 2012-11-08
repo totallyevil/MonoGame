@@ -21,6 +21,7 @@ namespace Microsoft.Xna.Framework.Graphics
 {
 	public class VertexBuffer : GraphicsResource
     {
+<<<<<<< HEAD
         protected bool _isDynamic;
 
 #if DIRECTX
@@ -36,6 +37,31 @@ namespace Microsoft.Xna.Framework.Graphics
 		public int VertexCount { get; private set; }
 		public VertexDeclaration VertexDeclaration { get; private set; }
 		public BufferUsage BufferUsage { get; private set; }
+=======
+        private readonly BufferUsage _bufferUsage;
+        private readonly VertexDeclaration _vertexDeclaration;
+
+        internal Type _type;
+        internal object _buffer;
+        internal IntPtr _bufferPtr;
+        internal int _bufferIndex;
+		internal int _size;		
+		internal uint _bufferStore;
+
+		// TODO: Remove this VB limit!
+		internal uint vbo;
+        internal static int _bufferCount;
+        internal static VertexBuffer[] _allBuffers = new VertexBuffer[50];
+		internal static List<Action> _delayedBufferDelegates = new List<Action>();
+
+        public VertexBuffer(GraphicsDevice graphics, Type type, int vertexCount, BufferUsage bufferUsage)
+        {
+            graphicsDevice = graphics;
+            _type = type;
+			VertexCount = vertexCount;
+            _bufferUsage = bufferUsage;
+        }
+>>>>>>> origin
 		
 		protected VertexBuffer(GraphicsDevice graphicsDevice, VertexDeclaration vertexDeclaration, int vertexCount, BufferUsage bufferUsage, bool dynamic)
 		{
@@ -169,12 +195,24 @@ namespace Microsoft.Xna.Framework.Graphics
 #endif
         }
 
+<<<<<<< HEAD
         public void GetData<T>(T[] data, int startIndex, int elementCount) where T : struct
         {
             var elementSizeInByte = Marshal.SizeOf(typeof(T));
             this.GetData<T>(0, data, startIndex, elementCount, elementSizeInByte);
+=======
+        public void SetData<T>(int offsetInBytes, T[] data, int startIndex, int elementCount, int vertexStride) where T : struct
+        {
+            SetData<T>(0, data, startIndex, elementCount, VertexDeclaration.VertexStride, SetDataOptions.Discard);
+>>>>>>> origin
         }
+        		
+		public void SetData<T>(T[] data, int startIndex, int elementCount) where T : struct
+        {
+            SetData<T>(0, data, startIndex, elementCount, VertexDeclaration.VertexStride, SetDataOptions.Discard);
+		}
 
+<<<<<<< HEAD
         public void GetData<T>(T[] data) where T : struct
         {
             var elementSizeInByte = Marshal.SizeOf(typeof(T));
@@ -194,6 +232,36 @@ namespace Microsoft.Xna.Framework.Graphics
         public void SetData<T>(T[] data) where T : struct
         {
             SetData<T>(0, data, 0, data.Length, VertexDeclaration.VertexStride, SetDataOptions.Discard);
+=======
+        public void SetData<T>(T[] data) where T : struct
+        {
+            SetData<T>(0, data, 0, data.Length, VertexDeclaration.VertexStride, SetDataOptions.Discard);
+        }
+
+		protected void SetData<T>(int offsetInBytes, T[] data, int startIndex, int elementCount, int vertexStride, SetDataOptions options) where T : struct
+        {
+            if (data == null)
+                throw new ArgumentNullException("data is null");
+            if (data.Length < (startIndex + elementCount))
+                throw new InvalidOperationException("The array specified in the data parameter is not the correct size for the amount of data requested.");
+            if ((vertexStride > (VertexCount * VertexDeclaration.VertexStride)) || (vertexStride < VertexDeclaration.VertexStride))
+                throw new ArgumentOutOfRangeException("One of the following conditions is true:\nThe vertex stride is larger than the vertex buffer.\nThe vertex stride is too small for the type of data requested.");
+   
+			var elementSizeInBytes = Marshal.SizeOf(typeof(T));
+
+			//Threading.BlockOnUIThread(() =>
+            //{
+                var sizeInBytes = elementSizeInBytes * elementCount;
+#if MONOMAC
+                GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
+                GL.BufferSubData<T>(BufferTarget.ArrayBuffer, new IntPtr(offsetInBytes), new IntPtr(sizeInBytes), data);
+#else
+				GL11.BindBuffer(All11.ArrayBuffer, vbo);
+                GL11.BufferSubData<T>(All11.ArrayBuffer, new IntPtr(offsetInBytes), new IntPtr(sizeInBytes), data);
+#endif
+
+            //});
+>>>>>>> origin
         }
 
         protected void SetData<T>(int offsetInBytes, T[] data, int startIndex, int elementCount, int vertexStride, SetDataOptions options) where T : struct

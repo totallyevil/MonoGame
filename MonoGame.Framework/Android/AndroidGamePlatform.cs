@@ -81,8 +81,14 @@ using Android.Widget;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 using Microsoft.Xna.Framework.Audio;
+<<<<<<< HEAD
 using Microsoft.Xna.Framework.Media;
 using Android.Hardware;
+=======
+using Microsoft.Xna.Framework.Media;
+
+using GL11 = OpenTK.Graphics.ES11.GL;
+>>>>>>> origin
 
 namespace Microsoft.Xna.Framework
 {
@@ -97,9 +103,13 @@ namespace Microsoft.Xna.Framework
             AndroidGameActivity.Resumed += Activity_Resumed;
 
             Window = new AndroidGameWindow(Game.Activity, game);
+
+			string model = Android.OS.Build.Model;
+			runningOnEmulator = string.IsNullOrEmpty(model) ? false : model.Contains("sdk");
         }
 
         private bool _initialized;
+		private bool runningOnEmulator = false;
         public static bool IsPlayingVdeo { get; set; }
 		private bool _exiting = false;
 
@@ -157,6 +167,7 @@ namespace Microsoft.Xna.Framework
             switch (Window.Context.Resources.Configuration.Orientation)
             {
                 case Android.Content.Res.Orientation.Portrait:
+<<<<<<< HEAD
                     Window.SetOrientation(DisplayOrientation.Portrait, false);				
                     break;
                 case Android.Content.Res.Orientation.Landscape:
@@ -164,6 +175,15 @@ namespace Microsoft.Xna.Framework
                     break;
                 default:
                     Window.SetOrientation(DisplayOrientation.LandscapeLeft, false);
+=======
+                    Window.SetOrientation(DisplayOrientation.Portrait);				
+                    break;
+                case Android.Content.Res.Orientation.Landscape:
+                    Window.SetOrientation(DisplayOrientation.LandscapeLeft);
+                    break;
+                default:
+                    Window.SetOrientation(DisplayOrientation.LandscapeLeft);
+>>>>>>> origin
                     break;
             }			
             base.BeforeInitialize();
@@ -200,8 +220,14 @@ namespace Microsoft.Xna.Framework
         {
             if (!IsActive)
             {
+<<<<<<< HEAD
                 IsActive = true;
                 Window.Resume();
+=======
+				IsActive = true;
+                Window.Resume();
+                Accelerometer.Resume();
+>>>>>>> origin
                 Sound.ResumeAll();
                 MediaPlayer.Resume();
 				if(!Window.IsFocused)
@@ -214,9 +240,13 @@ namespace Microsoft.Xna.Framework
         {
             if (IsActive)
             {
-                IsActive = false;
+				IsActive = false;
                 Window.Pause();
 				Window.ClearFocus();
+<<<<<<< HEAD
+=======
+                Accelerometer.Pause();
+>>>>>>> origin
                 Sound.PauseAll();
                 MediaPlayer.Pause();
             }
@@ -229,7 +259,7 @@ namespace Microsoft.Xna.Framework
 		
 		public override void Log(string Message) 
 		{
-#if LOGGING
+#if !LOGGING
 			Android.Util.Log.Debug("MonoGameDebug", Message);
 #endif
 		}
@@ -239,7 +269,21 @@ namespace Microsoft.Xna.Framework
 			if (_exiting) return;
             try
             {
-                Window.SwapBuffers();
+				if (this.Window.GLContextVersion == OpenTK.Graphics.GLContextVersion.Gles2_0)
+				{
+					Window.SwapBuffers();
+				}
+				else
+				{
+					if (!runningOnEmulator)
+					{
+						Window.SwapBuffers();
+					}
+					else
+					{
+					   GL11.Flush();
+					}
+				}
             }
             catch (Exception ex)
             {

@@ -42,10 +42,14 @@ using System;
 using System.IO;
 using System.Linq;
 
+<<<<<<< HEAD:MonoGame.Framework/PSSuite/Media/Video.cs
 
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Microsoft.Xna.Framework.Media
+=======
+namespace Microsoft.Xna.Framework.Content
+>>>>>>> origin:MonoGame.Framework/Android/Content/ContentReaders/SoundEffectReader.cs
 {
 	/// <summary>
 	/// PlayStationSuite has no video support

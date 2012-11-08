@@ -15,6 +15,8 @@
     <DebugType>full</DebugType>
     <Optimize>False</Optimize>
     <OutputPath>.</OutputPath>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -24,6 +26,8 @@
     <DebugType>none</DebugType>
     <Optimize>False</Optimize>
     <OutputPath>.</OutputPath>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
@@ -33,6 +37,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="MonoDevelop.Core">
       <HintPath>..\..\..\..\..\..\..\..\Program Files %28x86%29\MonoDevelop\bin\MonoDevelop.Core.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files %28x86%29\MonoDevelop\bin\MonoDevelop.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

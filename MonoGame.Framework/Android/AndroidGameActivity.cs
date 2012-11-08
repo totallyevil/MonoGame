@@ -17,7 +17,7 @@ namespace Microsoft.Xna.Framework
 {
     public class AndroidGameActivity : Activity
     {
-        public static Game Game { get; set; }
+		public static Game Game { get; set; }
 		
 		private OrientationListener o;		
 		private ScreenReceiver screenReceiver;
@@ -44,8 +44,13 @@ namespace Microsoft.Xna.Framework
 		    filter.AddAction(Intent.ActionUserPresent);
 		    
 		    screenReceiver = new ScreenReceiver();
+<<<<<<< HEAD
 		    RegisterReceiver(screenReceiver, filter);
 
+=======
+		    RegisterReceiver(screenReceiver, filter);
+
+>>>>>>> origin
             RequestWindowFeature(WindowFeatures.NoTitle);
 		}
 
@@ -55,21 +60,48 @@ namespace Microsoft.Xna.Framework
 		{
 			// we need to refresh the viewport here.			
 			base.OnConfigurationChanged (newConfig);
+<<<<<<< HEAD
 		}
 
+=======
+		}
+
+		/// <summary>
+		/// Called when another app comes into the foreground or
+		/// if the screen is locked
+		/// </summary>
+>>>>>>> origin
         protected override void OnPause()
         {
-            base.OnPause();
+		    base.OnPause();
             if (Paused != null)
+<<<<<<< HEAD
                 Paused(this, EventArgs.Empty);
 
+=======
+                Paused(this, EventArgs.Empty);
+
+            //if (Game.GraphicsDevice != null)
+             //   Game.GraphicsDevice.ResourcesLost = true;
+
+			//if (Game.Window != null && Game.Window.Parent != null && (Game.Window.Parent is FrameLayout))
+			//{				
+            //  ((FrameLayout)Game.Window.Parent).RemoveAllViews();
+			//}
+>>>>>>> origin
         }
 
         public static event EventHandler Resumed;
+
+		/// <summary>
+		/// Happens when the user returns to the activity
+		/// and when it first starts
+		/// </summary>
         protected override void OnResume()
         {
-            base.OnResume();
+			base.OnResume();
             if (Resumed != null)
+<<<<<<< HEAD
                 Resumed(this, EventArgs.Empty);
 
             var deviceManager = (IGraphicsDeviceManager)Game.Services.GetService(typeof(IGraphicsDeviceManager));
@@ -84,6 +116,38 @@ namespace Microsoft.Xna.Framework
             UnregisterReceiver(screenReceiver);
 			base.OnDestroy ();
 		}
+=======
+                Resumed(this, EventArgs.Empty);
+
+            var deviceManager = (IGraphicsDeviceManager)Game.Services.GetService(typeof(IGraphicsDeviceManager));
+            if (deviceManager == null)
+                return;
+
+            (deviceManager as GraphicsDeviceManager).ForceSetFullScreen();
+            //Game.Window.RequestFocus();
+            //Game.GraphicsDevice.Initialize(Game.Platform);		
+        }
+
+		protected override void OnStart ()
+		{
+			base.OnStart ();
+		}
+
+		protected override void OnStop ()
+		{
+			base.OnStop ();
+		}
+
+		protected override void OnDestroy ()
+		{
+			base.OnDestroy ();
+		}
+
+		protected override void OnRestart ()
+		{
+			base.OnRestart ();
+		}
+>>>>>>> origin
     }
 	
 	public static class ActivityExtensions

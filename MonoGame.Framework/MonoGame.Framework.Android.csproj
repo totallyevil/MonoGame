@@ -40,7 +40,7 @@
     <AndroidUseSharedRuntime>False</AndroidUseSharedRuntime>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <AndroidLinkMode>SdkOnly</AndroidLinkMode>
-    <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Android" />
@@ -62,6 +62,9 @@
     <Compile Include="Android\ScreenReciever.cs" />
     <Compile Include="Android\TitleContainer.cs" />
     <Compile Include="Audio\AudioCategory.cs" />
+    <Compile Include="Android\Input\Mouse.cs" />
+    <Compile Include="Android\OrientationListener.cs" />
+    <Compile Include="Android\TitleContainer.cs" />
     <Compile Include="Content\ContentManager.cs" />
     <Compile Include="Content\ContentExtensions.cs" />
     <Compile Include="Content\ContentReaders\ArrayReader.cs" />
@@ -410,6 +413,8 @@
       <Project>{565129E0-4EE5-4F6F-B403-C3484C9740BE}</Project>
       <Name>Lidgren.Network.Android</Name>
     </ProjectReference>
+    <Compile Include="XnaToOpenTK.cs" />
+    <Compile Include="Android\ScreenReciever.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -481,6 +481,7 @@ namespace Microsoft.Xna.Framework
 #endif
             }
         }
+<<<<<<< HEAD
 
         /// <summary>
         /// This method is used by MonoGame Android to adjust the game's drawn to area to fill
@@ -551,6 +552,25 @@ namespace Microsoft.Xna.Framework
 
             Android.Util.Log.Debug("MonoGame", "GraphicsDeviceManager.ResetClientBounds: newClientBounds=" + newClientBounds.ToString());
 #endif
+=======
+		
+		public DisplayOrientation SupportedOrientations 
+		{ 
+			get
+			{
+				return _supportedOrientations;
+			}
+			set
+			{
+				_supportedOrientations = value;
+				_game.Window.SetSupportedOrientations(_supportedOrientations);
+			}
+		}
+
+        internal void ResetClientBounds()
+        {
+            // do nothing for now
+>>>>>>> origin
         }
 
     }
