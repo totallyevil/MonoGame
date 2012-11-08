@@ -26,11 +26,15 @@
 				<Reference type="Gac" refto="OpenTK" />
 				<Reference type="Gac" refto="MonoGame.Framework.Linux" />
 				<Reference type="Gac" refto="Lidgren.Network" />
+<<<<<<< HEAD
 <<<<<<< HEAD:ProjectTemplates/MonoDevelop/templates/MonoGameLinuxProject.xpt.xml
 				<Reference type="Gac" refto="Tao.Sdl.dll" />
 =======
 				<Reference type="Gac" refto="Tao.Sdl" />
 >>>>>>> origin:ProjectTemplates/MonoDevelop.MonoGame.2.5/templates/MonoGameLinuxProject.xpt.xml
+=======
+				<Reference type="Gac" refto="Tao.Sdl" />
+>>>>>>> 755d54341b2f2a405ed15934cb6a4ff781ecaf70
 			</References>
 			<Files>
 				<File name="Game1.cs" src="MonoGameApplication/Game1.cs" />

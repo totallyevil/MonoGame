@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #region License
 /*
 Microsoft Public License (Ms-PL)
@@ -418,6 +419,139 @@ namespace Microsoft.Xna.Framework
         private int previousDisplayWidth;
         private int previousDisplayHeight;
 
+=======
+#region License
+/*
+Microsoft Public License (Ms-PL)
+MonoGame - Copyright © 2009-2011 The MonoGame Team
+
+All rights reserved.
+
+This license governs use of the accompanying software. If you use the software,
+you accept this license. If you do not accept the license, do not use the
+software.
+
+1. Definitions
+
+The terms "reproduce," "reproduction," "derivative works," and "distribution"
+have the same meaning here as under U.S. copyright law.
+
+A "contribution" is the original software, or any additions or changes to the
+software.
+
+A "contributor" is any person that distributes its contribution under this
+license.
+
+"Licensed patents" are a contributor's patent claims that read directly on its
+contribution.
+
+2. Grant of Rights
+
+(A) Copyright Grant- Subject to the terms of this license, including the
+license conditions and limitations in section 3, each contributor grants you a
+non-exclusive, worldwide, royalty-free copyright license to reproduce its
+contribution, prepare derivative works of its contribution, and distribute its
+contribution or any derivative works that you create.
+
+(B) Patent Grant- Subject to the terms of this license, including the license
+conditions and limitations in section 3, each contributor grants you a
+non-exclusive, worldwide, royalty-free license under its licensed patents to
+make, have made, use, sell, offer for sale, import, and/or otherwise dispose of
+its contribution in the software or derivative works of the contribution in the
+software.
+
+3. Conditions and Limitations
+
+(A) No Trademark License- This license does not grant you rights to use any
+contributors' name, logo, or trademarks.
+
+(B) If you bring a patent claim against any contributor over patents that you
+claim are infringed by the software, your patent license from such contributor
+to the software ends automatically.
+
+(C) If you distribute any portion of the software, you must retain all
+copyright, patent, trademark, and attribution notices that are present in the
+software.
+
+(D) If you distribute any portion of the software in source code form, you may
+do so only under this license by including a complete copy of this license with
+your distribution. If you distribute any portion of the software in compiled or
+object code form, you may only do so under a license that complies with this
+license.
+
+(E) The software is licensed "as-is." You bear the risk of using it. The
+contributors give no express warranties, guarantees or conditions. You may have
+additional consumer rights under your local laws which this license cannot
+change. To the extent permitted under your local laws, the contributors exclude
+the implied warranties of merchantability, fitness for a particular purpose and
+non-infringement.
+*/
+#endregion License
+
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+#if !PSS
+using System.Drawing;
+#endif
+using System.IO;
+using System.Reflection;
+using System.Diagnostics;
+#if WINRT
+using System.Threading.Tasks;
+using Windows.ApplicationModel.Activation;
+#endif
+
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Input.Touch;
+using Microsoft.Xna.Framework.GamerServices;
+
+
+namespace Microsoft.Xna.Framework
+{
+    public class Game : IDisposable
+    {
+        private const float DefaultTargetFramesPerSecond = 60.0f;
+
+        private GameComponentCollection _components;
+        private GameServiceContainer _services;
+        internal GamePlatform Platform;
+
+        private SortingFilteringCollection<IDrawable> _drawables =
+            new SortingFilteringCollection<IDrawable>(
+                d => d.Visible,
+                (d, handler) => d.VisibleChanged += handler,
+                (d, handler) => d.VisibleChanged -= handler,
+                (d1 ,d2) => Comparer<int>.Default.Compare(d1.DrawOrder, d2.DrawOrder),
+                (d, handler) => d.DrawOrderChanged += handler,
+                (d, handler) => d.DrawOrderChanged -= handler);
+
+        private SortingFilteringCollection<IUpdateable> _updateables =
+            new SortingFilteringCollection<IUpdateable>(
+                u => u.Enabled,
+                (u, handler) => u.EnabledChanged += handler,
+                (u, handler) => u.EnabledChanged -= handler,
+                (u1, u2) => Comparer<int>.Default.Compare(u1.UpdateOrder, u2.UpdateOrder),
+                (u, handler) => u.UpdateOrderChanged += handler,
+                (u, handler) => u.UpdateOrderChanged -= handler);
+
+        private IGraphicsDeviceManager _graphicsDeviceManager;
+        private IGraphicsDeviceService _graphicsDeviceService;
+
+        private bool _initialized = false;
+        private bool _isFixedTimeStep = true;
+
+        private TimeSpan _targetElapsedTime = TimeSpan.FromSeconds(1 / DefaultTargetFramesPerSecond);
+
+        private readonly TimeSpan _maxElapsedTime = TimeSpan.FromMilliseconds(500);
+
+
+        private bool _suppressDraw;
+        
+>>>>>>> 755d54341b2f2a405ed15934cb6a4ff781ecaf70
         public Game()
         {
             _instance = this;
@@ -427,9 +561,36 @@ namespace Microsoft.Xna.Framework
             Content = new ContentManager(_services);
 
             Platform = GamePlatform.Create(this);
+<<<<<<< HEAD
             Platform.Activated += Platform_Activated;
             Platform.Deactivated += Platform_Deactivated;
             _services.AddService(typeof(GamePlatform), Platform);
+=======
+            Platform.Activated += OnActivated;
+            Platform.Deactivated += OnDeactivated;
+            _services.AddService(typeof(GamePlatform), Platform);
+
+#if WINRT
+            Platform.ViewStateChanged += Platform_ApplicationViewChanged;
+#endif //WINRT
+
+#if MONOMAC || WINDOWS || LINUX
+            // Set the window title.
+            // TODO: Get the title from the WindowsPhoneManifest.xml for WP7 projects.
+            string windowTitle = string.Empty;
+            var assembly = Assembly.GetEntryAssembly();
+
+            //Use the Title attribute of the Assembly if possible.
+            var assemblyTitleAtt = ((AssemblyTitleAttribute)AssemblyTitleAttribute.GetCustomAttribute(assembly, typeof(AssemblyTitleAttribute)));
+            if (assemblyTitleAtt != null)
+                windowTitle = assemblyTitleAtt.Title;
+
+            // Otherwise, fallback to the Name of the assembly.
+            if (string.IsNullOrEmpty(windowTitle))
+                windowTitle = assembly.GetName().Name;
+            Window.Title = windowTitle;
+#endif
+>>>>>>> 755d54341b2f2a405ed15934cb6a4ff781ecaf70
         }
 
         ~Game()
@@ -457,7 +618,20 @@ namespace Microsoft.Xna.Framework
             if (disposing)
             {
                 Platform.Dispose();
+<<<<<<< HEAD
             }
+=======
+
+                // Dispose loaded game components
+                for (int i = 0; i < _components.Count; i++)
+                {
+                    var disposable = _components[i] as IDisposable;
+                    if (disposable != null)
+                        disposable.Dispose();
+                }
+            }
+
+>>>>>>> 755d54341b2f2a405ed15934cb6a4ff781ecaf70
             _isDisposed = true;
         }
 
@@ -589,19 +763,63 @@ namespace Microsoft.Xna.Framework
         public event EventHandler<EventArgs> Disposed;
         public event EventHandler<EventArgs> Exiting;
 
+<<<<<<< HEAD
+=======
+#if WINRT
+        public event EventHandler<ViewStateChangedEventArgs> ApplicationViewChanged;
+        public ApplicationExecutionState PreviousExecutionState { get; internal set; }
+#endif
+
+>>>>>>> 755d54341b2f2a405ed15934cb6a4ff781ecaf70
         #endregion
 
         #region Public Methods
 
         public void Exit()
         {
+<<<<<<< HEAD
 			Platform.Exit();
+=======
+            Platform.Exit();
+>>>>>>> 755d54341b2f2a405ed15934cb6a4ff781ecaf70
         }
 
         public void ResetElapsedTime()
         {
             Platform.ResetElapsedTime();
+<<<<<<< HEAD
             _gameTime.ResetElapsedTime();
+=======
+            _gameTimer.Reset();
+            _gameTimer.Start();
+            _accumulatedElapsedTime = TimeSpan.Zero;
+            _gameTime.ElapsedGameTime = TimeSpan.Zero;
+        }
+
+        public void SuppressDraw()
+        {
+            _suppressDraw = true;
+        }
+        
+        public void RunOneFrame()
+        {
+            AssertNotDisposed();
+            if (!Platform.BeforeRun())
+                return;
+
+            if (!_initialized) {
+                DoInitialize ();
+                _initialized = true;
+            }
+
+            BeginRun();
+
+            //Not quite right..
+            Tick ();
+
+            EndRun ();
+
+>>>>>>> 755d54341b2f2a405ed15934cb6a4ff781ecaf70
         }
 
         public void Run()
@@ -615,6 +833,7 @@ namespace Microsoft.Xna.Framework
             if (!Platform.BeforeRun())
                 return;
 
+<<<<<<< HEAD
             // In an original XNA game the GraphicsDevice property is null
             // during initialization but before the Game's Initialize method is
             // called the property is available so we can only assume that it
@@ -628,6 +847,12 @@ namespace Microsoft.Xna.Framework
             Platform.BeforeInitialize();
             Initialize();
             _initialized = true;
+=======
+            if (!_initialized) {
+                DoInitialize ();
+                _initialized = true;
+            }
+>>>>>>> 755d54341b2f2a405ed15934cb6a4ff781ecaf70
 
             BeginRun();
             switch (runBehavior)
@@ -645,6 +870,7 @@ namespace Microsoft.Xna.Framework
                 throw new NotImplementedException(string.Format(
                     "Handling for the run behavior {0} is not implemented.", runBehavior));
             }
+<<<<<<< HEAD
         }
 
         private DateTime _now;
@@ -1283,11 +1509,177 @@ namespace Microsoft.Xna.Framework
         {
             _updateables.ForEachFilteredItem(UpdateAction, gameTime);
         }
+=======
+        }
+
+        private TimeSpan _accumulatedElapsedTime;
+        private readonly GameTime _gameTime = new GameTime();
+        private Stopwatch _gameTimer = Stopwatch.StartNew();
+
+        public void Tick()
+        {
+            // NOTE: This code is very sensitive and can break very badly
+            // with even what looks like a safe change.  Be sure to test 
+            // any change fully in both the fixed and variable timestep 
+            // modes across multiple devices and platforms.
+
+        RetryTick:
+
+            // Advance the accumulated elapsed time.
+            _accumulatedElapsedTime += _gameTimer.Elapsed;
+            _gameTimer.Reset();
+            _gameTimer.Start();
+
+            // If we're in the fixed timestep mode and not enough time has elapsed
+            // to perform an update we sleep off the the remaining time to save battery
+            // life and/or release CPU time to other threads and processes.
+            if (IsFixedTimeStep && _accumulatedElapsedTime < TargetElapsedTime)
+            {
+                var sleepTime = (int)(TargetElapsedTime - _accumulatedElapsedTime).TotalMilliseconds;
+
+                // NOTE: While sleep can be inaccurate in general it is 
+                // accurate enough for frame limiting purposes if some
+                // fluctuation is an acceptable result.
+#if WINRT
+                Task.Delay(sleepTime).Wait();
+#else
+                System.Threading.Thread.Sleep(sleepTime);
+#endif
+                goto RetryTick;
+            }
+
+            // Do not allow any update to take longer than our maximum.
+            if (_accumulatedElapsedTime > _maxElapsedTime)
+                _accumulatedElapsedTime = _maxElapsedTime;
+
+            // http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.gametime.isrunningslowly.aspx
+            // Calculate IsRunningSlowly for the fixed time step, but only when the accumulated time
+            // exceeds the target time.
+
+            if (IsFixedTimeStep)
+            {
+                _gameTime.ElapsedGameTime = TargetElapsedTime;
+                var stepCount = 0;
+
+                _gameTime.IsRunningSlowly = (_accumulatedElapsedTime > TargetElapsedTime);
+
+                // Perform as many full fixed length time steps as we can.
+                while (_accumulatedElapsedTime >= TargetElapsedTime)
+                {
+                    _gameTime.TotalGameTime += TargetElapsedTime;
+                    _accumulatedElapsedTime -= TargetElapsedTime;
+                    ++stepCount;
+
+                    DoUpdate(_gameTime);
+                }
+
+                // Draw needs to know the total elapsed time
+                // that occured for the fixed length updates.
+                _gameTime.ElapsedGameTime = TimeSpan.FromTicks(TargetElapsedTime.Ticks * stepCount);
+            }
+            else
+            {
+                // Perform a single variable length update.
+                _gameTime.ElapsedGameTime = _accumulatedElapsedTime;
+                _gameTime.TotalGameTime += _accumulatedElapsedTime;
+                _accumulatedElapsedTime = TimeSpan.Zero;
+
+                DoUpdate(_gameTime);
+            }
+
+            // Draw unless the update suppressed it.
+            if (_suppressDraw)
+                _suppressDraw = false;
+            else
+            {
+                DoDraw(_gameTime);
+                Platform.Present();
+            }
+        }
+
+        #endregion
+
+        #region Protected Methods
+
+        protected virtual bool BeginDraw() { return true; }
+        protected virtual void EndDraw() { }
+
+        protected virtual void BeginRun() { }
+        protected virtual void EndRun() { }
+
+        protected virtual void LoadContent() { }
+        protected virtual void UnloadContent() { }
+
+        protected virtual void Initialize()
+        {
+            // TODO: We shouldn't need to do this here.
+            applyChanges(graphicsDeviceManager);
+
+            // According to the information given on MSDN (see link below), all
+            // GameComponents in Components at the time Initialize() is called
+            // are initialized.
+            // http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.game.initialize.aspx
+
+            // 1. Categorize components into IUpdateable and IDrawable lists.
+            // 2. Subscribe to Added/Removed events to keep the categorized
+            //    lists synced and to Initialize future components as they are
+            //    added.
+            // 3. Initialize all existing components
+            CategorizeComponents();
+            _components.ComponentAdded += Components_ComponentAdded;
+            _components.ComponentRemoved += Components_ComponentRemoved;
+            InitializeExistingComponents();
+
+            _graphicsDeviceService = (IGraphicsDeviceService)
+                Services.GetService(typeof(IGraphicsDeviceService));
+
+            // FIXME: If this test fails, is LoadContent ever called?  This
+            //        seems like a condition that warrants an exception more
+            //        than a silent failure.
+            if (_graphicsDeviceService != null &&
+                _graphicsDeviceService.GraphicsDevice != null)
+            {
+                LoadContent();
+            }
+        }
+
+        private static readonly Action<IDrawable, GameTime> DrawAction =
+            (drawable, gameTime) => drawable.Draw(gameTime);
+
+        protected virtual void Draw(GameTime gameTime)
+        {
+
+            _drawables.ForEachFilteredItem(DrawAction, gameTime);
+        }
+
+        private static readonly Action<IUpdateable, GameTime> UpdateAction =
+            (updateable, gameTime) => updateable.Update(gameTime);
+
+        protected virtual void Update(GameTime gameTime)
+        {
+            _updateables.ForEachFilteredItem(UpdateAction, gameTime);
+		}
+>>>>>>> 755d54341b2f2a405ed15934cb6a4ff781ecaf70
 
         protected virtual void OnExiting(object sender, EventArgs args)
         {
             Raise(Exiting, args);
         }
+<<<<<<< HEAD
+=======
+		
+		protected virtual void OnActivated (object sender, EventArgs args)
+		{
+			AssertNotDisposed();
+			Raise(Activated, args);
+		}
+		
+		protected virtual void OnDeactivated (object sender, EventArgs args)
+		{
+			AssertNotDisposed();
+			Raise(Deactivated, args);
+		}
+>>>>>>> 755d54341b2f2a405ed15934cb6a4ff781ecaf70
 
         #endregion Protected Methods
 
@@ -1318,6 +1710,7 @@ namespace Microsoft.Xna.Framework
 			DoExiting();
         }
 
+<<<<<<< HEAD
         private void Platform_Activated(object sender, EventArgs e)
         {
             AssertNotDisposed();
@@ -1329,6 +1722,15 @@ namespace Microsoft.Xna.Framework
             AssertNotDisposed();
             Raise(Deactivated, e);
         }
+=======
+#if WINRT
+        private void Platform_ApplicationViewChanged(object sender, ViewStateChangedEventArgs e)
+        {
+            AssertNotDisposed();
+            Raise(ApplicationViewChanged, e);
+        }
+#endif
+>>>>>>> 755d54341b2f2a405ed15934cb6a4ff781ecaf70
 
         #endregion Event Handlers
 
@@ -1346,6 +1748,7 @@ namespace Microsoft.Xna.Framework
             else
                 Platform.ExitFullScreen();
 
+<<<<<<< HEAD
             // FIXME: Is this the correct/best way to set the viewport?  There
             //        are/were several snippets like this through the project.
             var viewport = new Viewport();
@@ -1360,6 +1763,12 @@ namespace Microsoft.Xna.Framework
             viewport.Height = GraphicsDevice.PresentationParameters.BackBufferHeight;
 #endif
 
+=======
+            var viewport = new Viewport(0, 0,
+			                            GraphicsDevice.PresentationParameters.BackBufferWidth,
+			                            GraphicsDevice.PresentationParameters.BackBufferHeight);
+
+>>>>>>> 755d54341b2f2a405ed15934cb6a4ff781ecaf70
             GraphicsDevice.Viewport = viewport;
 			Platform.EndScreenDeviceChange(string.Empty, viewport.Width, viewport.Height);
         }
@@ -1394,6 +1803,7 @@ namespace Microsoft.Xna.Framework
 		internal void DoExiting()
 		{
 			OnExiting(this, EventArgs.Empty);
+<<<<<<< HEAD
 		}
 
 #if LINUX
@@ -1406,6 +1816,21 @@ namespace Microsoft.Xna.Framework
         #endregion Internal Methods
 
         private GraphicsDeviceManager graphicsDeviceManager
+=======
+			UnloadContent();
+		}
+
+        internal void ResizeWindow(bool changed)
+        {
+#if LINUX || WINDOWS
+            ((OpenTKGamePlatform)Platform).ResetWindowBounds(changed);
+#endif
+        }
+
+        #endregion Internal Methods
+
+        internal GraphicsDeviceManager graphicsDeviceManager
+>>>>>>> 755d54341b2f2a405ed15934cb6a4ff781ecaf70
         {
             get
             {
@@ -1757,4 +2182,7 @@ namespace Microsoft.Xna.Framework
         Synchronous
     }
 }
+<<<<<<< HEAD
 >>>>>>> origin
+=======
+>>>>>>> 755d54341b2f2a405ed15934cb6a4ff781ecaf70

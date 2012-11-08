@@ -10,6 +10,8 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Lidgren.Network.iOS</RootNamespace>
     <AssemblyName>Lidgren.Network.iOS</AssemblyName>
+    <ReleaseVersion>2.5.0.0</ReleaseVersion>
+    <SynchReleaseVersion>false</SynchReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -38,7 +40,6 @@
     <Reference Include="System.Core" />
     <Reference Include="monotouch" />
   </ItemGroup>
-  <Import Project="$(ProgramFiles)\MSBuild\MonoTouch\Novell.MonoTouch.Common.targets" Condition="'$(windir)' != '' " />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Compile Include="Encryption\INetEncryption.cs" />
@@ -106,7 +107,6 @@
     <Compile Include="NetUnreliableSequencedReceiver.cs" />
     <Compile Include="NetUnreliableUnorderedReceiver.cs" />
     <Compile Include="NetUtility.cs" />
-    <Compile Include="PlatformSocket.cs" />
     <Compile Include="SenderChannelBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
