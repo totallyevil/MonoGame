@@ -356,6 +356,9 @@
     <Compile Include="Graphics\ModelMeshCollection.cs" />
     <Compile Include="Graphics\ModelMeshPart.cs" />
     <Compile Include="Graphics\ModelMeshPartCollection.cs" />
+    <Compile Include="Content\ContentReaders\EffectMaterialReader.cs" />
+    <Compile Include="Content\ContentReaders\ExternalReferenceReader.cs" />
+    <Compile Include="Graphics\Effect\EffectMaterial.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="PSSuite\" />
